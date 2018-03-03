@@ -14,7 +14,6 @@ class State:
     def __init__(self):
         pass
 
-
 class Point:
     x = 0
     y = 0
@@ -89,9 +88,9 @@ def move():
     data = bottle.request.json
 
     # TODO: Do things with data
-    print "*** /move TESTING ***"
-    print data
-    print "*** end /move TESTING ***"
+    printStuff("*** /move TESTING ***")
+    printStuff(data)
+    printStuff("*** end /move TESTING ***")
 
     directions = ['up', 'down', 'left', 'right']
     state = current_board(data)
@@ -100,7 +99,7 @@ def move():
 
     filtered_moves = valid_moves(data, directions, state)
     direction = choose_move(data, filtered_moves, state)
-    print direction
+    printStuff(direction)
     return {
         'move': direction,
         'taunt': 'battlesnake-python!'
@@ -154,22 +153,22 @@ def current_board(data):
                 # snake head
                 type = NodeType.SNAKE_HEAD
                 if your_snake_point != point:
-                    print '####'
-                    print your_snake_point
-                    print point
+                    printStuff('####')
+                    printStuff(your_snake_point)
+                    printStuff(point)
                     snake_list.append(point)
             else:
                 type = NodeType.SNAKE_BODY
             cur_snake_board[point.y][point.x] = type
 
-    print 'food_list'
-    print food_list
+    printStuff('food_list')
+    printStuff(food_list)
 
-    print 'snake_list'
-    print snake_list
+    printStuff('snake_list')
+    printStuff(snake_list)
 
-    print 'your_snake_point'
-    print your_snake_point
+    printStuff('your_snake_point')
+    printStuff(your_snake_point)
 
     state = State()
     state.food_list = food_list
@@ -221,25 +220,25 @@ def no_suicide(data, directions, state):
     if 'up' in directions:
         next_x = first.get('x')
         next_y = first.get('y') - 1
-        print currBoard[next_y][next_x]
+        printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('up')
     if 'down' in directions:
         next_x = first.get('x')
         next_y = first.get('y') + 1
-        print currBoard[next_y][next_x]
+        printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('down')
     if 'left' in directions:
         next_x = first.get('x') - 1
         next_y = first.get('y')
-        print currBoard[next_y][next_x]
+        printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('left')
     if 'right' in directions:
         next_x = first.get('x') + 1
         next_y = first.get('y')
-        print currBoard[next_y][next_x]
+        printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('right')
 
@@ -262,7 +261,11 @@ def direction(a, b):
 
 def printGrid(cur_snake_board):
     for y in range(len(cur_snake_board)):
-        print cur_snake_board[y]
+        printStuff(cur_snake_board[y])
+
+def printStuff(stuff):
+    return;
+    print stuff
 
 # Expose WSGI app (so gunicorn can find it)
 application = bottle.default_app()
