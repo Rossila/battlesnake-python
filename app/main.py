@@ -84,8 +84,6 @@ def move():
     print data
     print "*** end /move TESTING ***"
 
-    printGrid(current_board(data))
-
     directions = ['up', 'down', 'left', 'right']
     currBoard = current_board(data)
 
@@ -109,7 +107,7 @@ def current_board(data):
     board_width = data.get('width')
     board_height = data.get('height')
 
-    cur_snake_board = [[NodeType.EMPTY for width in range(board_width)] for height in range(board_height)]
+    cur_snake_board = [[NodeType.EMPTY for height in range(board_height)] for width in range(board_width)]
 
     # add food
     food_list_data = data.get('food').get('data')
@@ -182,26 +180,26 @@ def no_suicide(data, directions, currBoard):
     if 'up' in directions:
         next_x = first.get('x')
         next_y = first.get('y') - 1
-        print currBoard[next_x][next_y]
-        if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
+        print currBoard[next_y][next_x]
+        if currBoard[next_y][next_x] == nodeType.SNAKE_HEAD or currBoard[next_y][next_x] == nodeType.SNAKE_BODY:
             directions.remove('up')
     if 'down' in directions:
         next_x = first.get('x')
         next_y = first.get('y') + 1
-        print currBoard[next_x][next_y]
-        if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
+        print currBoard[next_y][next_x]
+        if currBoard[next_y][next_x] == nodeType.SNAKE_HEAD or currBoard[next_y][next_x] == nodeType.SNAKE_BODY:
             directions.remove('down')
     if 'left' in directions:
         next_x = first.get('x') - 1
         next_y = first.get('y')
-        print currBoard[next_x][next_y]
-        if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
+        print currBoard[next_y][next_x]
+        if currBoard[next_y][next_x] == nodeType.SNAKE_HEAD or currBoard[next_y][next_x] == nodeType.SNAKE_BODY:
             directions.remove('left')
     if 'right' in directions:
         next_x = first.get('x') + 1
         next_y = first.get('y')
-        print currBoard[next_x][next_y]
-        if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
+        print currBoard[next_y][next_x]
+        if currBoard[next_y][next_x] == nodeType.SNAKE_HEAD or currBoard[next_y][next_x] == nodeType.SNAKE_BODY:
             directions.remove('right')
 
     return directions
