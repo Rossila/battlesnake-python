@@ -14,6 +14,9 @@ class State:
     def __init__(self):
         pass
 
+def newPoint(x, y):
+   return Point({'x': x, 'y':y})
+
 class Point:
     x = 0
     y = 0
@@ -32,6 +35,9 @@ class Point:
 #
     def __ne__(self, other):
         return not self.__eq__(other)
+#
+    def __hash__(self):
+        return hash((self.x, self.y))
 #
     def squaredDistance(self, other):
         return pow(self.x - other.x, 2) + pow(self.y - other.y, 2)
@@ -120,6 +126,25 @@ def choose_move(data, directions, state):
         direction = 'down'
     elif (target.y < your_snake_point.y) and 'up' in directions:
         direction = 'up'
+
+    # up
+    area_up = calc_area(newPoint(your_snake_point.x, your_snake_point.y - 1), state, set([]), 0)
+    # down
+    area_down = calc_area(newPoint(your_snake_point.x, your_snake_point.y + 1), state, set([]), 0)
+    # left
+    area_left = calc_area(newPoint(your_snake_point.x - 1, your_snake_point.y), state, set([]), 0)
+    # right
+    area_right = calc_area(newPoint(your_snake_point.x + 1, your_snake_point.y), state, set([]), 0)
+
+    max_area = max(area_up, area_down, area_left, area_right)
+    if area_up == max_area and 'up' in directions:
+         direction = 'up'
+    if area_down == max_area and 'down' in directions:
+         direction = 'down'
+    if area_right == max_area and 'right' in directions:
+         direction = 'right'
+    if area_left == max_area and 'left' in directions:
+         direction = 'left'
 
     return direction
 
@@ -258,6 +283,35 @@ def direction(a, b):
        return 'right'
     if x < 0:
        return 'left'
+
+
+def calc_area(point, state, visited, tries):
+    tries += 1
+    if tries > 10000:
+        print '10000 reached'
+        return 0
+    if point.x > 0 and state.board[point.x-1][point.y] == NodeType.EMPTY:
+        p = newPoint(point.x - 1, point.y)
+        if p not in visited:
+	    visited.add(newPoint(point.x - 1, point.y))
+	    calc_area(newPoint(point.x - 1, point.y), state, visited, tries)
+    if point.y > 0 and state.board[point.x][point.y-1] == NodeType.EMPTY:
+        p = newPoint(point.x, point.y - 1)
+        if p not in visited:
+            visited.add(newPoint(point.x, point.y - 1))
+            calc_area(newPoint(point.x, point.y - 1), state, visited, tries)
+    if point.x < len(state.board[0]) - 1 and state.board[point.x + 1][point.y] == NodeType.EMPTY:
+        p = newPoint(point.x + 1, point.y)
+        if p not in visited:
+            visited.add(newPoint(point.x + 1, point.y))
+            calc_area(newPoint(point.x + 1, point.y), state, visited, tries)
+    if point.y < len(state.board) - 1 and state.board[point.x][point.y+1] == NodeType.EMPTY:
+        p = newPoint(point.x, point.y + 1)
+        if p not in visited:
+            visited.add(newPoint(point.x, point.y + 1))
+            calc_area(newPoint(point.x, point.y + 1), state, visited, tries)
+
+    return len(visited)
 
 def printGrid(cur_snake_board):
     for y in range(len(cur_snake_board)):
