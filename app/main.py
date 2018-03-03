@@ -310,22 +310,22 @@ def calc_area(point, state, visited, tries):
         if tries > 10000:
             print '10000 reached'
             return 0
-        if point.x > 0 and state.board[point.x-1][point.y] == NodeType.EMPTY:
+        if point.x > 0 and state.board[point.y][point.x-1] == NodeType.EMPTY:
             p = newPoint(point.x - 1, point.y)
             if p not in visited:
     	        visited.add(newPoint(point.x - 1, point.y))
     	        calc_area(newPoint(point.x - 1, point.y), state, visited, tries)
-        if point.y > 0 and state.board[point.x][point.y-1] == NodeType.EMPTY:
+        if point.y > 0 and state.board[point.y-1][point.x] == NodeType.EMPTY:
             p = newPoint(point.x, point.y - 1)
             if p not in visited:
                 visited.add(newPoint(point.x, point.y - 1))
                 calc_area(newPoint(point.x, point.y - 1), state, visited, tries)
-        if point.x < len(state.board[0]) - 1 and state.board[point.x + 1][point.y] == NodeType.EMPTY:
+        if point.x < len(state.board[0]) - 1 and state.board[point.y][point.x+1] == NodeType.EMPTY:
             p = newPoint(point.x + 1, point.y)
             if p not in visited:
                 visited.add(newPoint(point.x + 1, point.y))
                 calc_area(newPoint(point.x + 1, point.y), state, visited, tries)
-        if point.y < len(state.board) - 1 and state.board[point.x][point.y+1] == NodeType.EMPTY:
+        if point.y < len(state.board) - 1 and state.board[point.y+1][point.x] == NodeType.EMPTY:
             p = newPoint(point.x, point.y + 1)
             if p not in visited:
                 visited.add(newPoint(point.x, point.y + 1))
