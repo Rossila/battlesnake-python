@@ -112,13 +112,14 @@ def choose_move(data, directions, state):
     your_snake_point = state.your_snake_point
 
     direction = random.choice(directions)
-    if target.x > your_snake_point.x:
+
+    if target.x > your_snake_point.x and 'right' in directions:
         direction = 'right'
-    elif (target.x < your_snake_point.x):
+    elif (target.x < your_snake_point.x) and 'left' in directions:
         direction = 'left'
-    elif (target.y > your_snake_point.y):
+    elif (target.y > your_snake_point.y) and 'down' in directions:
         direction = 'down'
-    elif (target.y < your_snake_point.y):
+    elif (target.y < your_snake_point.y) and 'up' in directions:
         direction = 'up'
 
     return direction
