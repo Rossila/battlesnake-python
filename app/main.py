@@ -87,13 +87,19 @@ def move():
     printGrid(current_board(data))
 
     directions = ['up', 'down', 'left', 'right']
-    filtered_moves = valid_moves(data, directions)
-    direction = random.choice(filtered_moves)
+    currBoard = current_board(data)
+
+    filtered_moves = valid_moves(data, directions, currBoard)
+    direction = choose_move(data, filtered_moves, currBoard)
     print direction
     return {
         'move': direction,
         'taunt': 'battlesnake-python!'
     }
+
+
+def choose_move(data, direction, currBoard):
+    return random.choice(direction)
 
 def current_board(data):
     food_list = []
@@ -144,14 +150,13 @@ def current_board(data):
 
     return cur_snake_board
 
-def valid_moves(data, directions):
-    directions = no_wall(data, directions)
-    directions = no_suicide(data, directions)
-    print directions
+def valid_moves(data, directions, currBoard):
+    directions = no_wall(data, directions, currBoard)
+    directions = no_suicide(data, directions, currBoard)
     return directions
 
 
-def no_wall(data, directions):
+def no_wall(data, directions, currBoard):
     you = data.get('you')
     head = you.get('body').get('data')[0]
     # up
@@ -167,28 +172,38 @@ def no_wall(data, directions):
     if head.get('x') == data.get('width') - 1 and 'right' in directions:
         directions.remove('right')
 
-    print 'nowall dir'
-    print directions
     return directions
 
 
-def no_suicide(data, directions):
+def no_suicide(data, directions, currBoard):
     you = data.get('you')
     first = you.get('body').get('data')[0]
-    second = you.get('body').get('data')[1]
-    last_dir = direction(second, first)
 
-    if last_dir == 'left' and 'right' in directions:
-        directions.remove('right')
-    if last_dir == 'right' and 'left' in directions:
-        directions.remove('left')
-    if last_dir == 'up' and 'down' in directions:
-        directions.remove('down')
-    if last_dir == 'down' and 'up' in directions:
-        directions.remove('up')
+    if 'up' in directions:
+        next_x = first.get('x')
+        next_y = first.get('y') - 1
+        print currBoard[next_x][next_y]
+        if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
+            directions.remove('up')
+    if 'down' in directions:
+        next_x = first.get('x')
+        next_y = first.get('y') + 1
+        print currBoard[next_x][next_y]
+        if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
+            directions.remove('down')
+    if 'left' in directions:
+        next_x = first.get('x') - 1
+        next_y = first.get('y')
+        print currBoard[next_x][next_y]
+        if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
+            directions.remove('left')
+    if 'right' in directions:
+        next_x = first.get('x') + 1
+        next_y = first.get('y')
+        print currBoard[next_x][next_y]
+        if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
+            directions.remove('right')
 
-    print 'nosuicide dir'
-    print directions
     return directions
 
 
