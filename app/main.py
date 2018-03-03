@@ -88,7 +88,7 @@ def no_wall(data, directions):
     if head.get('y') == data.get('height') - 1 and 'down' in directions:
         directions.remove('down')
     # left
-    if head.get('x') == 0 and 'left' in direcitons:
+    if head.get('x') == 0 and 'left' in directions:
         directions.remove('left')
     # right
     if head.get('x') == data.get('width') - 1 and 'right' in directions:
