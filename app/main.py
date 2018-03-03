@@ -59,17 +59,30 @@ def move():
         'taunt': 'battlesnake-python!'
     }
 
-def currentBoard(data):
+def current_board(data):
     board_width = data.get('width')
     board_height = data.get('height')
 
     cur_snake_board = [[nodeType.EMPTY for width in range(board_width)] for height in range(board_height)]
 
+    # add food
     food_list = data.get('food').get('data')
     for food in food_list:
         cur_snake_board[food.get('x')][food.get('y')] = nodeType.FOOD
 
+    # add snakes
+    snake_list = data.get('snakes').get('data')
+    for snake in snake_list:
+        for index, point in enumerate(snake.get('body').get('data')):
+            if index == 0:
+                # snake head
+                type = nodeType.SNAKE_HEAD
+            else:
+                ctype = nodeType.SNAKE_BODY
+            cur_snake_board[point.get('x')][point.get('y')] = type
+
     return cur_snake_board
+
 
 def valid_moves(data, directions):
     directions = no_wall(data, directions)
@@ -88,7 +101,7 @@ def no_wall(data, directions):
     if head.get('y') == data.get('height') - 1 and 'down' in directions:
         directions.remove('down')
     # left
-    if head.get('x') == 0 and 'left' in direcitons:
+    if head.get('x') == 0 and 'left' in directions:
         directions.remove('left')
     # right
     if head.get('x') == data.get('width') - 1 and 'right' in directions:
