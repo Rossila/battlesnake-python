@@ -1,4 +1,5 @@
 import bottle
+import json
 import os
 import random
 
@@ -45,12 +46,76 @@ def move():
     print "*** end /move TESTING ***"
 
     directions = ['up', 'down', 'left', 'right']
-    direction = random.choice(directions)
+    filtered_moves = valid_moves(data, directions)
+    direction = random.choice(filtered_moves)
     print direction
     return {
         'move': direction,
         'taunt': 'battlesnake-python!'
     }
+
+
+def valid_moves(data, directions):
+    directions = no_wall(data, directions)
+    directions = no_suicide(data, directions)
+    print directions
+    return directions
+
+
+def no_wall(data, directions):
+    you = data.get('you')        
+    last = you.get('body').get('data')[-1]
+    # up
+    if last.get('y') == 0 and 'up' in direcitons:
+        directions.remove('up')
+    # down
+    if last.get('y') == data.get('height') - 1 and 'down' in directions:
+        directions.remove('down')
+    # left
+    if last.get('x') == 0 and 'left' in direcitons:
+        directions.remove('left')
+    # right
+    if last.get('x') == data.get('width') - 1 and 'right' in directions:
+        directions.remove('right')
+
+    print 'nowall dir'
+    print directions
+    return directions
+
+
+def no_suicide(data, directions):
+    you = data.get('you')
+    last = you.get('body').get('data')[-2]
+    second_last = you.get('body').get('data')[-3]
+    last_dir = direction(second_last, last)
+
+    if last_dir == 'left' and 'right' in directions:
+        directions.remove('right')
+    if last_dir == 'right' and 'left' in directions:
+        directions.remove('left')
+    if last_dir == 'up' and 'down' in directions:
+        directions.remove('down')
+    if last_dir == 'down' and 'up' in directions:
+        directions.remove('up')
+
+    print 'nosuicide dir'
+    print directions
+    return directions
+
+
+def direction(a, b):
+    # b is last, a is second last
+    y = b.get('y') - a.get('y')
+    x = b.get('x') - a.get('x')
+
+    if y > 0:
+       return 'down' 
+    if y < 0:
+       return 'up'
+    if x > 0:
+       return 'right'
+    if x < 0:
+       return 'left'
 
 
 # Expose WSGI app (so gunicorn can find it)
