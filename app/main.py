@@ -2,7 +2,13 @@ import bottle
 import json
 import os
 import random
+from enum import Enum
 
+class nodeType(Enum):
+    EMPTY = 1
+    SNAKE_HEAD = 2
+    SNAKE_BODY = 3
+    FOOD = 4
 
 @bottle.route('/')
 def static():
@@ -53,6 +59,17 @@ def move():
         'taunt': 'battlesnake-python!'
     }
 
+def currentBoard(data):
+    board_width = data.get('width')
+    board_height = data.get('height')
+
+    cur_snake_board = [[nodeType.EMPTY for width in range(board_width)] for height in range(board_height)]
+
+    food_list = data.get('food').get('data')
+    for food in food_list:
+        cur_snake_board[food.get('x')][food.get('y')] = nodeType.FOOD
+
+    return cur_snake_board
 
 def valid_moves(data, directions):
     directions = no_wall(data, directions)
@@ -62,7 +79,7 @@ def valid_moves(data, directions):
 
 
 def no_wall(data, directions):
-    you = data.get('you')        
+    you = data.get('you')
     head = you.get('body').get('data')[0]
     # up
     if head.get('y') == 0 and 'up' in directions:
@@ -108,7 +125,7 @@ def direction(a, b):
     x = b.get('x') - a.get('x')
 
     if y > 0:
-       return 'down' 
+       return 'down'
     if y < 0:
        return 'up'
     if x > 0:
