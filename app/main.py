@@ -4,10 +4,16 @@ import os
 import random
 from enum import Enum
 
-food_list = []
-# list of positions of snake heads (not including yourself)
-snake_list = []
-your_snake_point = None
+class State:
+    food_list = []
+    # list of positions of snake heads (not including yourself)
+    snake_list = []
+    your_snake_point = None
+    board = None
+
+    def __init__(self):
+        pass
+
 
 class Point:
     x = 0
@@ -15,18 +21,21 @@ class Point:
     def __init__(self, data):
         self.x = data.get('x')
         self.y = data.get('y')
-
+#
     def __repr__(self):
         return '(' + str(self.x) + ', ' + str(self.y) + ')'
-
+#
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return self.x == other.x and self.y == other.y
         else:
             return False
-
+#
     def __ne__(self, other):
         return not self.__eq__(other)
+#
+    def squaredDistance(self, other):
+        return pow(self.x - other.x, 2) + pow(self.y - other.y, 2)
 
 class NodeType(Enum):
     EMPTY = 1
@@ -85,12 +94,12 @@ def move():
     print "*** end /move TESTING ***"
 
     directions = ['up', 'down', 'left', 'right']
-    currBoard = current_board(data)
+    state = current_board(data)
 
-    printGrid(currBoard)
+    printGrid(state.board)
 
-    filtered_moves = valid_moves(data, directions, currBoard)
-    direction = choose_move(data, filtered_moves, currBoard)
+    filtered_moves = valid_moves(data, directions, state)
+    direction = choose_move(data, filtered_moves, state)
     print direction
     return {
         'move': direction,
@@ -98,8 +107,21 @@ def move():
     }
 
 
-def choose_move(data, direction, currBoard):
-    return random.choice(direction)
+def choose_move(data, directions, state):
+    target = target_food_point(state)
+    your_snake_point = state.your_snake_point
+
+    direction = random.choice(directions)
+    if target.x > your_snake_point.x:
+        direction = 'right'
+    elif (target.x < your_snake_point.x):
+        direction = 'left'
+    elif (target.y > your_snake_point.y):
+        direction = 'down'
+    elif (target.y < your_snake_point.y):
+        direction = 'up'
+
+    return direction
 
 def current_board(data):
     food_list = []
@@ -148,15 +170,30 @@ def current_board(data):
     print 'your_snake_point'
     print your_snake_point
 
-    return cur_snake_board
+    state = State()
+    state.food_list = food_list
+    state.snake_list = snake_list
+    state.your_snake_point = your_snake_point
+    state.board = cur_snake_board
 
-def valid_moves(data, directions, currBoard):
-    directions = no_wall(data, directions, currBoard)
-    directions = no_suicide(data, directions, currBoard)
+    return state
+
+def valid_moves(data, directions, state):
+    directions = no_wall(data, directions, state)
+    directions = no_suicide(data, directions, state)
     return directions
 
+def target_food_point(state):
+    closest_point = state.food_list[0]
+    your_snake_point = state.your_snake_point
+    squaredDistance = -1
+    for food_point in state.food_list:
+        if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance:
+            squaredDistance = your_snake_point.squaredDistance(food_point)
+            closest_point = food_point
+    return closest_point
 
-def no_wall(data, directions, currBoard):
+def no_wall(data, directions, state):
     you = data.get('you')
     head = you.get('body').get('data')[0]
     # up
@@ -175,9 +212,10 @@ def no_wall(data, directions, currBoard):
     return directions
 
 
-def no_suicide(data, directions, currBoard):
+def no_suicide(data, directions, state):
     you = data.get('you')
     first = you.get('body').get('data')[0]
+    currBoard = state.board
 
     if 'up' in directions:
         next_x = first.get('x')
