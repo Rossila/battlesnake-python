@@ -54,7 +54,7 @@ def move():
     currBoard = current_board(data)
 
     filtered_moves = valid_moves(data, directions, currBoard)
-    direction = choose_move(data, direction, currBoard)
+    direction = choose_move(data, filtered_moves, currBoard)
     print direction
     return {
         'move': direction,
