@@ -133,25 +133,25 @@ def no_suicide(data, directions, currBoard):
         next_x = first.get('x')
         next_y = first.get('y') - 1
         print currBoard[next_x][next_y]
-        if currBoard[next_x][next_y] != nodeType.EMPTY or currBoard[next_x][next_y] != nodeType.FOOD:
+        if currBoard[next_x][next_y] == nodeType.SNAKEHEAD or currBoard[next_x][next_y] == nodeType.SNAKEBODY:
             directions.remove('up')
     if 'down' in directions:
         next_x = first.get('x')
         next_y = first.get('y') + 1
         print currBoard[next_x][next_y]
-        if currBoard[next_x][next_y] != nodeType.EMPTY or currBoard[next_x][next_y] != nodeType.FOOD:
+        if currBoard[next_x][next_y] == nodeType.SNAKEHEAD or currBoard[next_x][next_y] == nodeType.SNAKEBODY:
             directions.remove('down')
     if 'left' in directions:
         next_x = first.get('x') - 1
         next_y = first.get('y')
         print currBoard[next_x][next_y]
-        if currBoard[next_x][next_y] != nodeType.EMPTY or currBoard[next_x][next_y] != nodeType.FOOD:
+        if currBoard[next_x][next_y] == nodeType.SNAKEHEAD or currBoard[next_x][next_y] == nodeType.SNAKEBODY:
             directions.remove('left')
     if 'right' in directions:
         next_x = first.get('x') + 1
         next_y = first.get('y')
         print currBoard[next_x][next_y]
-        if currBoard[next_x][next_y] != nodeType.EMPTY or currBoard[next_x][next_y] != nodeType.FOOD:
+        if currBoard[next_x][next_y] == nodeType.SNAKEHEAD or currBoard[next_x][next_y] == nodeType.SNAKEBODY:
             directions.remove('right')
 
     print 'nosuicide dir'
