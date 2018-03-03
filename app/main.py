@@ -86,9 +86,9 @@ def current_board(data):
     return cur_snake_board
 
 
-def valid_moves(data, directions):
-    directions = no_wall(data, directions)
-    directions = no_suicide(data, directions)
+def valid_moves(data, directions, currBoard):
+    directions = no_wall(data, directions, currBoard)
+    directions = no_suicide(data, directions, currBoard)
     print directions
     return directions
 
