@@ -132,22 +132,22 @@ def no_suicide(data, directions, currBoard):
     if 'up' in directions:
         next_x = first.get('x')
         next_y = first.get('y') - 1
-        if currBoard[next_x][next_y] != nodeType.EMPTY || currBoard[next_x][next_y] != nodeType.FOOD:
+        if currBoard[next_x][next_y] != nodeType.EMPTY or currBoard[next_x][next_y] != nodeType.FOOD:
             directions.remove('up')
     if 'down' in directions:
         next_x = first.get('x')
         next_y = first.get('y') + 1
-        if currBoard[next_x][next_y] != nodeType.EMPTY || currBoard[next_x][next_y] != nodeType.FOOD:
+        if currBoard[next_x][next_y] != nodeType.EMPTY or currBoard[next_x][next_y] != nodeType.FOOD:
             directions.remove('down')
     if 'left' in directions:
         next_x = first.get('x') - 1
         next_y = first.get('y')
-        if currBoard[next_x][next_y] != nodeType.EMPTY || currBoard[next_x][next_y] != nodeType.FOOD:
+        if currBoard[next_x][next_y] != nodeType.EMPTY or currBoard[next_x][next_y] != nodeType.FOOD:
             directions.remove('left')
     if 'right' in directions:
         next_x = first.get('x') + 1
         next_y = first.get('y')
-        if currBoard[next_x][next_y] != nodeType.EMPTY || currBoard[next_x][next_y] != nodeType.FOOD:
+        if currBoard[next_x][next_y] != nodeType.EMPTY or currBoard[next_x][next_y] != nodeType.FOOD:
             directions.remove('right')
 
     print 'nosuicide dir'
