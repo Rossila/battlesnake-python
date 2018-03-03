@@ -36,13 +36,13 @@ class NodeType(Enum):
 
     def __repr__(self):
         if (self == self.SNAKE_BODY):
-            return 'Body'
+            return 'B'
         elif (self == self.SNAKE_HEAD):
-            return 'Head'
+            return 'H'
         elif (self == self.FOOD):
-            return 'Food'
+            return 'F'
         else:
-            return '    '
+            return ' '
 
 @bottle.route('/')
 def static():
@@ -87,6 +87,8 @@ def move():
     directions = ['up', 'down', 'left', 'right']
     currBoard = current_board(data)
 
+    printGrid(currBoard)
+
     filtered_moves = valid_moves(data, directions, currBoard)
     direction = choose_move(data, filtered_moves, currBoard)
     print direction
@@ -107,7 +109,7 @@ def current_board(data):
     board_width = data.get('width')
     board_height = data.get('height')
 
-    cur_snake_board = [[NodeType.EMPTY for height in range(board_height)] for width in range(board_width)]
+    cur_snake_board = [[NodeType.EMPTY for width in range(board_width)] for height in range(board_height)]
 
     # add food
     food_list_data = data.get('food').get('data')
@@ -134,7 +136,7 @@ def current_board(data):
                     print point
                     snake_list.append(point)
             else:
-                ctype = NodeType.SNAKE_BODY
+                type = NodeType.SNAKE_BODY
             cur_snake_board[point.y][point.x] = type
 
     print 'food_list'
