@@ -66,7 +66,7 @@ def no_wall(data, directions):
     you = data.get('you')        
     head = you.get('body').get('data')[0]
     # up
-    if head.get('y') == 0 and 'up' in direcitons:
+    if head.get('y') == 0 and 'up' in directions:
         directions.remove('up')
     # down
     if head.get('y') == data.get('height') - 1 and 'down' in directions:
