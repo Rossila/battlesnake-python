@@ -7,6 +7,7 @@ from enum import Enum
 class State:
     survival = 1
     food_list = []
+    food_snake_list = []
     # list of positions of snake heads (not including yourself)
     snake_list = []
     your_snake_point = None
@@ -18,6 +19,13 @@ class State:
 
 def newPoint(x, y):
    return Point({'x': x, 'y':y})
+
+class Snake:
+    point = None
+    length = 0
+    def __init__(self, point, length):
+        self.point = point
+        self.length = length
 
 class Point:
     x = 0
@@ -191,7 +199,8 @@ def current_board(data):
                     printStuff('####')
                     printStuff(your_snake_point)
                     printStuff(point)
-                    snake_list.append(point)
+                    length = len(snake_data)
+                    snake_list.append(Snake(point, length))
             else:
                 type = NodeType.SNAKE_BODY
             cur_snake_board[point.y][point.x] = type
@@ -212,6 +221,8 @@ def current_board(data):
     state.board = cur_snake_board
     state.your_snake_length = your_snake_length
 
+    target_snakes(state)
+
     return state
 
 def valid_moves(data, directions, state):
@@ -223,7 +234,7 @@ def target_food_point(state):
     closest_point = state.food_list[0]
     your_snake_point = state.your_snake_point
     squaredDistance = -1
-    for food_point in state.food_list:
+    for food_point in state.food_list + state.food_snake_list:
         if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance:
             squaredDistance = your_snake_point.squaredDistance(food_point)
             closest_point = food_point
@@ -296,6 +307,12 @@ def direction(a, b):
        return 'left'
 
 
+def target_snakes(state):
+    for snake in state.snake_list:
+        if snake.length < state.your_snake_length
+            state.food_snake_list.append(point)
+
+
 def calc_area(point, state, visited, tries):
     if point.x > 0 and point.x < len(state.board[0]) and point.y > 0 and point.y < len(state.board):
         tries += 1
@@ -322,7 +339,7 @@ def calc_area(point, state, visited, tries):
             if p not in visited:
                 visited.add(newPoint(point.x, point.y + 1))
                 calc_area(newPoint(point.x, point.y + 1), state, visited, tries)
-    
+
     return len(visited)
 
 def printGrid(cur_snake_board):
@@ -330,7 +347,7 @@ def printGrid(cur_snake_board):
         printStuff(cur_snake_board[y])
 
 def printStuff(stuff):
-    return;
+    #return;
     print stuff
 
 # Expose WSGI app (so gunicorn can find it)
