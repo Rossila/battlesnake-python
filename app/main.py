@@ -5,10 +5,12 @@ import random
 from enum import Enum
 
 class State:
+    survival = 0
     food_list = []
     # list of positions of snake heads (not including yourself)
     snake_list = []
     your_snake_point = None
+    your_snake_length = 0
     board = None
 
     def __init__(self):
@@ -104,6 +106,7 @@ def move():
     printGrid(state.board)
 
     filtered_moves = valid_moves(data, directions, state)
+    filtered_moves = avoid_traps(state, directions)
     direction = choose_move(data, filtered_moves, state)
     printStuff(direction)
     return {
@@ -127,6 +130,12 @@ def choose_move(data, directions, state):
     elif (target.y < your_snake_point.y) and 'up' in directions:
         direction = 'up'
 
+
+    return direction
+
+
+def avoid_traps(state, directions):
+    your_snake_point = state.your_snake_point
     # up
     area_up = calc_area(newPoint(your_snake_point.x, your_snake_point.y - 1), state, set([]), 0)
     # down
@@ -136,17 +145,17 @@ def choose_move(data, directions, state):
     # right
     area_right = calc_area(newPoint(your_snake_point.x + 1, your_snake_point.y), state, set([]), 0)
 
-    max_area = max(area_up, area_down, area_left, area_right)
-    if area_up == max_area and 'up' in directions:
-         direction = 'up'
-    if area_down == max_area and 'down' in directions:
-         direction = 'down'
-    if area_right == max_area and 'right' in directions:
-         direction = 'right'
-    if area_left == max_area and 'left' in directions:
-         direction = 'left'
+    if state.survival == 1:
+        if area_up < snake.your_snake_length and 'up' in directions:
+            directions.remove('up')
+        if area_down < snake.your_snake_length and 'down' in directions:
+            directions.remove('down')
+        if area_right < snake.your_snake_length and 'right' in directions:
+            directions.remove('right')
+        if area_left < snake.your_snake_length and 'left' in directions:
+            directions.remove('left')
 
-    return direction
+    return directions
 
 def current_board(data):
     food_list = []
@@ -167,6 +176,7 @@ def current_board(data):
 
     # get your snake
     your_snake_point = Point(data.get('you').get('body').get('data')[0])
+    your_snake_length = len(data.get('you').get('body').get('data'))
 
     # add snakes
     snake_list_data = data.get('snakes').get('data')
@@ -200,6 +210,7 @@ def current_board(data):
     state.snake_list = snake_list
     state.your_snake_point = your_snake_point
     state.board = cur_snake_board
+    state.your_snake_length = your_snake_length
 
     return state
 
