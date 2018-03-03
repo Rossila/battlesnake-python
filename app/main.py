@@ -144,6 +144,14 @@ def avoid_traps(state, directions):
     area_left = calc_area(newPoint(your_snake_point.x - 1, your_snake_point.y), state, set([]), 0)
     # right
     area_right = calc_area(newPoint(your_snake_point.x + 1, your_snake_point.y), state, set([]), 0)
+    print 'up'
+    print area_up
+    print 'down'
+    print area_down
+    print 'left'
+    print area_left
+    print 'right'
+    print area_right
 
     if state.survival == 1:
         if area_up < state.your_snake_length and 'up' in directions:
