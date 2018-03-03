@@ -129,7 +129,8 @@ def no_suicide(data, directions, currBoard):
     if last_dir == 'down' and 'up' in directions:
         directions.remove('up')
 
-    if 'up' in directions: next_x = first.get('x')
+    if 'up' in directions:
+        next_x = first.get('x')
         next_y = first.get('y') - 1
         print currBoard[next_x][next_y]
         if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
