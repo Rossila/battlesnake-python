@@ -4,11 +4,45 @@ import os
 import random
 from enum import Enum
 
-class nodeType(Enum):
+food_list = []
+# list of positions of snake heads (not including yourself)
+snake_list = []
+your_snake_point = None
+
+class Point:
+    x = 0
+    y = 0
+    def __init__(self, data):
+        self.x = data.get('x')
+        self.y = data.get('y')
+
+    def __repr__(self):
+        return '(' + str(self.x) + ', ' + str(self.y) + ')'
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.x == other.x and self.y == other.y
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+class NodeType(Enum):
     EMPTY = 1
     SNAKE_HEAD = 2
     SNAKE_BODY = 3
     FOOD = 4
+
+    def __repr__(self):
+        if (self == self.SNAKE_BODY):
+            return 'Body'
+        elif (self == self.SNAKE_HEAD):
+            return 'Head'
+        elif (self == self.FOOD):
+            return 'Food'
+        else:
+            return '    '
 
 @bottle.route('/')
 def static():
@@ -50,6 +84,8 @@ def move():
     print data
     print "*** end /move TESTING ***"
 
+    printGrid(current_board(data))
+
     directions = ['up', 'down', 'left', 'right']
     filtered_moves = valid_moves(data, directions)
     direction = random.choice(filtered_moves)
@@ -60,29 +96,53 @@ def move():
     }
 
 def current_board(data):
+    food_list = []
+    snake_list = []
+    your_snake_point = None
+
     board_width = data.get('width')
     board_height = data.get('height')
 
-    cur_snake_board = [[nodeType.EMPTY for width in range(board_width)] for height in range(board_height)]
+    cur_snake_board = [[NodeType.EMPTY for width in range(board_width)] for height in range(board_height)]
 
     # add food
-    food_list = data.get('food').get('data')
-    for food in food_list:
-        cur_snake_board[food.get('x')][food.get('y')] = nodeType.FOOD
+    food_list_data = data.get('food').get('data')
+    for food in food_list_data:
+        point = Point(food)
+        cur_snake_board[point.y][point.x] = NodeType.FOOD
+        food_list.append(point);
+
+    # get your snake
+    your_snake_point = Point(data.get('you').get('body').get('data')[0])
 
     # add snakes
-    snake_list = data.get('snakes').get('data')
-    for snake in snake_list:
-        for index, point in enumerate(snake.get('body').get('data')):
+    snake_list_data = data.get('snakes').get('data')
+    for snake in snake_list_data:
+        snake_data = snake.get('body').get('data')
+        for index, point in enumerate(snake_data):
+            point = Point(point)
             if index == 0:
                 # snake head
-                type = nodeType.SNAKE_HEAD
+                type = NodeType.SNAKE_HEAD
+                if your_snake_point != point:
+                    print '####'
+                    print your_snake_point
+                    print point
+                    snake_list.append(point)
             else:
-                ctype = nodeType.SNAKE_BODY
-            cur_snake_board[point.get('x')][point.get('y')] = type
+                ctype = NodeType.SNAKE_BODY
+            cur_snake_board[point.y][point.x] = type
+
+    print 'food_list'
+    print food_list
+
+    print 'snake_list'
+    print snake_list
+
+    print 'your_snake_point'
+    print your_snake_point
 
     return cur_snake_board
-
 
 def valid_moves(data, directions):
     directions = no_wall(data, directions)
@@ -146,6 +206,9 @@ def direction(a, b):
     if x < 0:
        return 'left'
 
+def printGrid(cur_snake_board):
+    for y in range(len(cur_snake_board)):
+        print cur_snake_board[y]
 
 # Expose WSGI app (so gunicorn can find it)
 application = bottle.default_app()
