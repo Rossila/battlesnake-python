@@ -139,6 +139,8 @@ def no_suicide(data, directions, currBoard):
     if 'down' in directions:
         next_x = first.get('x')
         next_y = first.get('y') + 1
+        print 'down'
+        print currBoard[next_x][next_y]
         if currBoard[next_x][next_y] != 0:
             directions.remove('down')
     if 'left' in directions:
