@@ -109,25 +109,12 @@ def no_wall(data, directions, currBoard):
     if head.get('x') == data.get('width') - 1 and 'right' in directions:
         directions.remove('right')
 
-    print 'nowall dir'
-    print directions
     return directions
 
 
 def no_suicide(data, directions, currBoard):
     you = data.get('you')
     first = you.get('body').get('data')[0]
-    second = you.get('body').get('data')[1]
-    last_dir = direction(second, first)
-
-    if last_dir == 'left' and 'right' in directions:
-        directions.remove('right')
-    if last_dir == 'right' and 'left' in directions:
-        directions.remove('left')
-    if last_dir == 'up' and 'down' in directions:
-        directions.remove('down')
-    if last_dir == 'down' and 'up' in directions:
-        directions.remove('up')
 
     if 'up' in directions:
         next_x = first.get('x')
@@ -154,8 +141,6 @@ def no_suicide(data, directions, currBoard):
         if currBoard[next_x][next_y] == nodeType.SNAKE_HEAD or currBoard[next_x][next_y] == nodeType.SNAKE_BODY:
             directions.remove('right')
 
-    print 'nosuicide dir'
-    print directions
     return directions
 
 
