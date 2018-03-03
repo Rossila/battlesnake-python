@@ -338,7 +338,6 @@ def printGrid(cur_snake_board):
         printStuff(cur_snake_board[y])
 
 def printStuff(stuff):
-    return;
     print stuff
 
 # Expose WSGI app (so gunicorn can find it)
