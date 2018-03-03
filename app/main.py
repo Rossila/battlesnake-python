@@ -181,25 +181,25 @@ def no_suicide(data, directions, currBoard):
         next_x = first.get('x')
         next_y = first.get('y') - 1
         print currBoard[next_y][next_x]
-        if currBoard[next_y][next_x] == nodeType.SNAKE_HEAD or currBoard[next_y][next_x] == nodeType.SNAKE_BODY:
+        if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('up')
     if 'down' in directions:
         next_x = first.get('x')
         next_y = first.get('y') + 1
         print currBoard[next_y][next_x]
-        if currBoard[next_y][next_x] == nodeType.SNAKE_HEAD or currBoard[next_y][next_x] == nodeType.SNAKE_BODY:
+        if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('down')
     if 'left' in directions:
         next_x = first.get('x') - 1
         next_y = first.get('y')
         print currBoard[next_y][next_x]
-        if currBoard[next_y][next_x] == nodeType.SNAKE_HEAD or currBoard[next_y][next_x] == nodeType.SNAKE_BODY:
+        if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('left')
     if 'right' in directions:
         next_x = first.get('x') + 1
         next_y = first.get('y')
         print currBoard[next_y][next_x]
-        if currBoard[next_y][next_x] == nodeType.SNAKE_HEAD or currBoard[next_y][next_x] == nodeType.SNAKE_BODY:
+        if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('right')
 
     return directions
