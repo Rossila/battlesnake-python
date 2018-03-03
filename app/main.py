@@ -131,6 +131,8 @@ def no_suicide(data, directions, currBoard):
 
     print 'nosuicide dir'
     print directions
+    print 'curr board'
+    print currBoard
     return directions
 
 
