@@ -64,18 +64,18 @@ def valid_moves(data, directions):
 
 def no_wall(data, directions):
     you = data.get('you')        
-    last = you.get('body').get('data')[-1]
+    head = you.get('body').get('data')[0]
     # up
-    if last.get('y') == 0 and 'up' in direcitons:
+    if head.get('y') == 0 and 'up' in direcitons:
         directions.remove('up')
     # down
-    if last.get('y') == data.get('height') - 1 and 'down' in directions:
+    if head.get('y') == data.get('height') - 1 and 'down' in directions:
         directions.remove('down')
     # left
-    if last.get('x') == 0 and 'left' in direcitons:
+    if head.get('x') == 0 and 'left' in direcitons:
         directions.remove('left')
     # right
-    if last.get('x') == data.get('width') - 1 and 'right' in directions:
+    if head.get('x') == data.get('width') - 1 and 'right' in directions:
         directions.remove('right')
 
     print 'nowall dir'
@@ -85,9 +85,9 @@ def no_wall(data, directions):
 
 def no_suicide(data, directions):
     you = data.get('you')
-    last = you.get('body').get('data')[-2]
-    second_last = you.get('body').get('data')[-3]
-    last_dir = direction(second_last, last)
+    first = you.get('body').get('data')[0]
+    second = you.get('body').get('data')[1]
+    last_dir = direction(second, first)
 
     if last_dir == 'left' and 'right' in directions:
         directions.remove('right')
