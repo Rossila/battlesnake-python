@@ -134,6 +134,9 @@ def choose_move(data, directions, state):
     return direction
 
 
+def valid_square(point, state):
+    return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
+
 def avoid_traps(state, directions):
     your_snake_point = state.your_snake_point
     # up
@@ -310,22 +313,22 @@ def calc_area(point, state, visited, tries):
         if tries > 10000:
             print '10000 reached'
             return 0
-        if point.x > 0 and state.board[point.y][point.x-1] == NodeType.EMPTY:
+        if point.x > 0 and valid_square(newPoint(point.x-1, point.y), state):
             p = newPoint(point.x - 1, point.y)
             if p not in visited:
     	        visited.add(newPoint(point.x - 1, point.y))
     	        calc_area(newPoint(point.x - 1, point.y), state, visited, tries)
-        if point.y > 0 and state.board[point.y-1][point.x] == NodeType.EMPTY:
+        if point.y > 0 and valid_square(newPoint(point.x, point.y-1), state):
             p = newPoint(point.x, point.y - 1)
             if p not in visited:
                 visited.add(newPoint(point.x, point.y - 1))
                 calc_area(newPoint(point.x, point.y - 1), state, visited, tries)
-        if point.x < len(state.board[0]) - 1 and state.board[point.y][point.x+1] == NodeType.EMPTY:
+        if point.x < len(state.board[0]) - 1 and valid_square(newPoint(point.x+1, point.y), state):
             p = newPoint(point.x + 1, point.y)
             if p not in visited:
                 visited.add(newPoint(point.x + 1, point.y))
                 calc_area(newPoint(point.x + 1, point.y), state, visited, tries)
-        if point.y < len(state.board) - 1 and state.board[point.y+1][point.x] == NodeType.EMPTY:
+        if point.y < len(state.board) - 1 and valid_square(newPoint(point.x, point.y+1), state):
             p = newPoint(point.x, point.y + 1)
             if p not in visited:
                 visited.add(newPoint(point.x, point.y + 1))
