@@ -40,7 +40,10 @@ def move():
     data = bottle.request.json
 
     # TODO: Do things with data
-    
+    print "*** /move TESTING ***"
+    print data
+    print "*** end /move TESTING ***"
+
     directions = ['up', 'down', 'left', 'right']
     direction = random.choice(directions)
     print direction
