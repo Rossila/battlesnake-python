@@ -51,7 +51,9 @@ def move():
     print "*** end /move TESTING ***"
 
     directions = ['up', 'down', 'left', 'right']
-    filtered_moves = valid_moves(data, directions)
+    currBoard = currentBoard(data)
+
+    filtered_moves = valid_moves(data, directions, currBoard)
     direction = random.choice(filtered_moves)
     print direction
     return {
@@ -71,14 +73,14 @@ def currentBoard(data):
 
     return cur_snake_board
 
-def valid_moves(data, directions):
-    directions = no_wall(data, directions)
-    directions = no_suicide(data, directions)
+def valid_moves(data, directions, currBoard):
+    directions = no_wall(data, directions, currBoard)
+    directions = no_suicide(data, directions, currBoard)
     print directions
     return directions
 
 
-def no_wall(data, directions):
+def no_wall(data, directions, currBoard):
     you = data.get('you')
     head = you.get('body').get('data')[0]
     # up
@@ -99,7 +101,7 @@ def no_wall(data, directions):
     return directions
 
 
-def no_suicide(data, directions):
+def no_suicide(data, directions, currBoard):
     you = data.get('you')
     first = you.get('body').get('data')[0]
     second = you.get('body').get('data')[1]
@@ -113,6 +115,27 @@ def no_suicide(data, directions):
         directions.remove('down')
     if last_dir == 'down' and 'up' in directions:
         directions.remove('up')
+
+    if 'up' in directions:
+        next_x = first.get('x')
+        next_y = first.get('y') - 1
+        if currBoard[next_x][next_y] != 0:
+            directions.remove('up')
+    if 'down' in directions:
+        next_x = first.get('x')
+        next_y = first.get('y') + 1
+        if currBoard[next_x][next_y] != 0:
+            directions.remove('down')
+    if 'left' in directions:
+        next_x = first.get('x') - 1
+        next_y = first.get('y')
+        if currBoard[next_x][next_y] != 0:
+            directions.remove('left')
+    if 'right' in directions:
+        next_x = first.get('x') + 1
+        next_y = first.get('y')
+        if currBoard[next_x][next_y] != 0:
+            directions.remove('right')
 
     print 'nosuicide dir'
     print directions
