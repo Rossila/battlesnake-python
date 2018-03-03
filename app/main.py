@@ -51,7 +51,7 @@ def move():
     print "*** end /move TESTING ***"
 
     directions = ['up', 'down', 'left', 'right']
-    currBoard = currentBoard(data)
+    currBoard = current_board(data)
 
     filtered_moves = valid_moves(data, directions, currBoard)
     direction = random.choice(filtered_moves)
