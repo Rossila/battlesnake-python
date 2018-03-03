@@ -54,12 +54,16 @@ def move():
     currBoard = current_board(data)
 
     filtered_moves = valid_moves(data, directions, currBoard)
-    direction = random.choice(filtered_moves)
+    direction = choose_move(data, direction, currBoard)
     print direction
     return {
         'move': direction,
         'taunt': 'battlesnake-python!'
     }
+
+
+def choose_move(data, direction, currBoard):
+    return random.choice(direction)
 
 def current_board(data):
     board_width = data.get('width')
@@ -89,7 +93,6 @@ def current_board(data):
 def valid_moves(data, directions, currBoard):
     directions = no_wall(data, directions, currBoard)
     directions = no_suicide(data, directions, currBoard)
-    print directions
     return directions
 
 
