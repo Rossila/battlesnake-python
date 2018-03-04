@@ -12,6 +12,7 @@ class State:
     snake_list = []
     your_snake_point = None
     your_snake_length = 0
+    your_snake_health = 0
     board = None
     board_width = 0
     board_height = 0
@@ -146,33 +147,39 @@ def choose_move(data, directions, state):
     return direction
 
 def avoid_traps(state, directions):
-    your_snake_point = state.your_snake_point
-    # up
-    area_up = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y - 1)))
-    # down
-    area_down = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y + 1)))
-    # left
-    area_left = len(bfs(state, newPoint(your_snake_point.x - 1, your_snake_point.y)))
-    # right
-    area_right = len(bfs(state, newPoint(your_snake_point.x + 1, your_snake_point.y)))
-    print 'up'
-    print area_up
-    print 'down'
-    print area_down
-    print 'left'
-    print area_left
-    print 'right'
-    print area_right
-
     if state.survival == 1:
-        if area_up < state.your_snake_length and 'up' in directions:
-            directions.remove('up')
-        if area_down < state.your_snake_length and 'down' in directions:
-            directions.remove('down')
-        if area_right < state.your_snake_length and 'right' in directions:
-            directions.remove('right')
-        if area_left < state.your_snake_length and 'left' in directions:
-            directions.remove('left')
+        your_snake_point = state.your_snake_point
+        area_up = 0
+        area_down = 0
+        area_left = 0
+        area_right = 0
+        for direction in directions:
+            # up
+            if (direction == 'up'):
+                area_up = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y - 1)))
+                print 'up'
+                print area_up
+                if area_up < state.your_snake_length:
+                    directions.remove('up')
+            elif (direction == 'down'):
+                area_down = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y + 1)))
+                print 'down'
+                print area_down
+                if area_down < state.your_snake_length:
+                    directions.remove('down')
+            elif (direction == 'left'):
+                area_left = len(bfs(state, newPoint(your_snake_point.x - 1, your_snake_point.y)))
+                print 'left'
+                print area_left
+                if area_left < state.your_snake_length:
+                    directions.remove('left')
+            elif (direction == 'right'):
+                # right
+                area_right = len(bfs(state, newPoint(your_snake_point.x + 1, your_snake_point.y)))
+                print 'right'
+                print area_right
+                if area_right < state.your_snake_length:
+                    directions.remove('right')
 
     return directions
 
@@ -196,6 +203,7 @@ def current_board(data):
     # get your snake
     your_snake_point = Point(data.get('you').get('body').get('data')[0])
     your_snake_length = len(data.get('you').get('body').get('data'))
+    your_snake_health = data.get('you').get('health')
 
     # add snakes
     snake_list_data = data.get('snakes').get('data')
@@ -243,61 +251,78 @@ def valid_moves(data, directions, state):
     directions = no_suicide(data, directions, state)
     return directions
 
+def willCollide(state, poi):
+    if state.your_snake_point.squaredDistance(poi) < 2:
+        for snake in state.snake_list:
+            if snake.point.squaredDistance(poi) < 2:
+                return True
+    return False
+
 def target_food_point(state):
     closest_point = state.food_list[0]
     your_snake_point = state.your_snake_point
     squaredDistance = -1
-    for food_point in state.food_list + state.food_snake_list:
-        if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance:
+
+    for food_point in state.food_list:
+        if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance and not willCollide(state, food_point):
             squaredDistance = your_snake_point.squaredDistance(food_point)
             closest_point = food_point
+
+    # eat other snakes in select scenarios
+    if closest_point > 3 and state.your_snake_health > 15:
+        squaredDistance = -1
+        printStuff('FOOOOOD')
+        printStuff(food_snake_list)
+        for food_point in state.food_snake_list:
+            if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance:
+                squaredDistance = your_snake_point.squaredDistance(food_point)
+                closest_point = food_point
+
     return closest_point
 
 def no_wall(data, directions, state):
-    you = data.get('you')
-    head = you.get('body').get('data')[0]
+    head = state.your_snake_point
     # up
-    if head.get('y') == 0 and 'up' in directions:
+    if head.y == 0 and 'up' in directions:
         directions.remove('up')
     # down
-    if head.get('y') == data.get('height') - 1 and 'down' in directions:
+    if head.y == len(state.board) - 1 and 'down' in directions:
         directions.remove('down')
     # left
-    if head.get('x') == 0 and 'left' in directions:
+    if head.x == 0 and 'left' in directions:
         directions.remove('left')
     # right
-    if head.get('x') == data.get('width') - 1 and 'right' in directions:
+    if head.x == len(state.board[0]) - 1 and 'right' in directions:
         directions.remove('right')
 
     return directions
 
 
 def no_suicide(data, directions, state):
-    you = data.get('you')
-    first = you.get('body').get('data')[0]
+    first = state.your_snake_point
     currBoard = state.board
 
     if 'up' in directions:
-        next_x = first.get('x')
-        next_y = first.get('y') - 1
+        next_x = first.x
+        next_y = first.y - 1
         printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('up')
     if 'down' in directions:
-        next_x = first.get('x')
-        next_y = first.get('y') + 1
+        next_x = first.x
+        next_y = first.y + 1
         printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('down')
     if 'left' in directions:
-        next_x = first.get('x') - 1
-        next_y = first.get('y')
+        next_x = first.x - 1
+        next_y = first.y
         printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('left')
     if 'right' in directions:
-        next_x = first.get('x') + 1
-        next_y = first.get('y')
+        next_x = first.x + 1
+        next_y = first.y
         printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('right')
@@ -323,8 +348,28 @@ def direction(a, b):
 def target_snakes(state):
     for snake in state.snake_list:
         if snake.length < state.your_snake_length:
-            state.food_snake_list.append(snake.point)
+            # this snake is edible. Travel towards a valid move of its
+            otherState = State()
+            otherState.food_list = state.food_list
+            otherState.snake_list = state.snake_list
+            otherState.your_snake_point = snake.point
+            otherState.board = state.board
+            otherState.your_snake_length = snake.length
+            otherState.your_snake_health = state.your_snake_health
 
+            directions = valid_moves(None, ['up', 'down', 'left', 'right'], otherState)
+            direction = random.choice(directions)
+            new = None
+            if (direction == 'up'):
+                new = newPoint(snake.point.x, snake.point.y - 1)
+            elif (directions == 'down'):
+                new = newPoint(snake.point.x, snake.point.y + 1)
+            elif (directions == 'left'):
+                new = newPoint(snake.point.x - 1, snake.point.y)
+            elif (directions == 'right'):
+                new = newPoint(snake.point.x + 1, snake.point.y)
+            if new:
+                state.food_snake_list.append(new)
 
 def valid_square(point, state):
     return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
@@ -373,9 +418,7 @@ def bfs(state, point):
                 valid.add(p)
                 visited[p.y][p.x] = 1
 
-    printTable(visited)
     return valid
-    
 
 
 def calc_area(point, state, visited):
@@ -412,6 +455,7 @@ def printTable(visited):
         print visited[y]
 
 def printStuff(stuff):
+    return
     print stuff
 
 # Expose WSGI app (so gunicorn can find it)
