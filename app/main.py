@@ -5,7 +5,7 @@ import random
 from enum import Enum
 
 class State:
-    survival = 1
+    survival = 0
     food_list = []
     food_snake_list = []
     # list of positions of snake heads (not including yourself)
@@ -117,8 +117,10 @@ def move():
     printGrid(state.board)
 
     filtered_moves = valid_moves(data, directions, state)
-    if directions:
-        filtered_moves = avoid_traps(state, directions)
+    old_moves = filtered_moves
+    filtered_moves = avoid_traps(state, directions)
+    if directions == None or len(directions) < 1:
+        filtered_moves = old_moves
     direction = choose_move(data, filtered_moves, state)
     printStuff(direction)
     return {
@@ -133,7 +135,9 @@ def choose_move(data, directions, state):
 
     printStuff('available directions')
     printStuff(directions)
-    if directions:
+    if directions == None or len(directions) < 1:
+        direction = 'left'
+    else:
         direction = random.choice(directions)
 
     if target.x > your_snake_point.x and 'right' in directions:
@@ -144,7 +148,6 @@ def choose_move(data, directions, state):
         direction = 'down'
     elif (target.y < your_snake_point.y) and 'up' in directions:
         direction = 'up'
-
 
     return direction
 
@@ -210,6 +213,8 @@ def current_board(data):
     # add snakes
     snake_list_data = data.get('snakes').get('data')
     for snake in snake_list_data:
+        if snake.get('health') == 0:
+            continue
         snake_data = snake.get('body').get('data')
         for index, point in enumerate(snake_data):
             point = Point(point)
@@ -360,18 +365,21 @@ def target_snakes(state):
             otherState.your_snake_health = state.your_snake_health
 
             directions = valid_moves(None, ['up', 'down', 'left', 'right'], otherState)
-            direction = random.choice(directions)
-            new = None
-            if (direction == 'up'):
-                new = newPoint(snake.point.x, snake.point.y - 1)
-            elif (directions == 'down'):
-                new = newPoint(snake.point.x, snake.point.y + 1)
-            elif (directions == 'left'):
-                new = newPoint(snake.point.x - 1, snake.point.y)
-            elif (directions == 'right'):
-                new = newPoint(snake.point.x + 1, snake.point.y)
-            if new:
-                state.food_snake_list.append(new)
+            if (directions == None or len(directions) < 1):
+                continue
+            else:
+                direction = random.choice(directions)
+                new = None
+                if (direction == 'up'):
+                    new = newPoint(snake.point.x, snake.point.y - 1)
+                elif (directions == 'down'):
+                    new = newPoint(snake.point.x, snake.point.y + 1)
+                elif (directions == 'left'):
+                    new = newPoint(snake.point.x - 1, snake.point.y)
+                elif (directions == 'right'):
+                    new = newPoint(snake.point.x + 1, snake.point.y)
+                if new:
+                    state.food_snake_list.append(new)
 
 def valid_square(point, state):
     return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
