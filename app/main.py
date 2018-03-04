@@ -136,7 +136,7 @@ def choose_move(data, directions, state):
     printStuff('available directions')
     printStuff(directions)
     if directions == None or len(directions) < 1:
-        directino = 'left'
+        direction = 'left'
     else:
         direction = random.choice(directions)
 
@@ -148,7 +148,6 @@ def choose_move(data, directions, state):
         direction = 'down'
     elif (target.y < your_snake_point.y) and 'up' in directions:
         direction = 'up'
-
 
     return direction
 
