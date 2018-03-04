@@ -346,11 +346,11 @@ def target_snakes(state):
             # this snake is edible. Travel towards a valid move of its
             otherState = State()
             otherState.food_list = state.food_list
-            stotherStateate.snake_list = state.snake_list
+            otherState.snake_list = state.snake_list
             otherState.your_snake_point = snake.point
             otherState.board = state.cur_snake_board
             otherState.your_snake_length = snake.length
-            stotherStateate.your_snake_health = state.your_snake_health
+            otherState.your_snake_health = state.your_snake_health
 
             directions = valid_moves(None, ['up', 'down', 'left', 'right'], otherState)
             direction = random.choice(directions)
