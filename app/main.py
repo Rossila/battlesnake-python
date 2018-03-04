@@ -351,7 +351,7 @@ def area(point, state, visited):
             visited.add(p)
     	    area(p, state, visited)
 
-    return visited
+        return visited
 
 def printGrid(cur_snake_board):
     for y in range(len(cur_snake_board)):
