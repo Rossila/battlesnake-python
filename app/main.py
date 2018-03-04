@@ -119,7 +119,7 @@ def move():
     filtered_moves = valid_moves(data, directions, state)
     old_moves = filtered_moves
     filtered_moves = avoid_traps(state, directions)
-    if (not filtered_moves or len(filtered_moves) < 1):
+    if directions == None or len(directions) < 1:
         filtered_moves = old_moves
     direction = choose_move(data, filtered_moves, state)
     printStuff(direction)
@@ -135,7 +135,10 @@ def choose_move(data, directions, state):
 
     printStuff('available directions')
     printStuff(directions)
-    direction = random.choice(directions)
+    if directions == None or len(directions) < 1:
+        directino = 'left'
+    else:
+        direction = random.choice(directions)
 
     if target.x > your_snake_point.x and 'right' in directions:
         direction = 'right'
