@@ -12,6 +12,7 @@ class State:
     snake_list = []
     your_snake_point = None
     your_snake_length = 0
+    your_snake_health = 0
     board = None
 
     def __init__(self):
@@ -197,7 +198,8 @@ def current_board(data):
 
     # get your snake
     your_snake_point = Point(data.get('you').get('body').get('data')[0])
-    your_snake_length = len(data.get('you').get('body').get('data'))
+    your_snake_length = data.get('you').get('body').get('data')[0].get('length')
+    your_snake_health = data.get('you').get('body').get('data')[0].get('health')
 
     # add snakes
     snake_list_data = data.get('snakes').get('data')
@@ -233,6 +235,7 @@ def current_board(data):
     state.your_snake_point = your_snake_point
     state.board = cur_snake_board
     state.your_snake_length = your_snake_length
+    state.your_snake_health = your_snake_health
 
     target_snakes(state)
 
@@ -247,10 +250,20 @@ def target_food_point(state):
     closest_point = state.food_list[0]
     your_snake_point = state.your_snake_point
     squaredDistance = -1
-    for food_point in state.food_list + state.food_snake_list:
+
+    for food_point in state.food_list:
         if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance:
             squaredDistance = your_snake_point.squaredDistance(food_point)
             closest_point = food_point
+
+    # eat other snakes in select scenarios
+    if closest_point > 10 and state.your_snake_health > 15:
+        squaredDistance = -1
+        for food_point in state.food_snake_list:
+            if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance:
+                squaredDistance = your_snake_point.squaredDistance(food_point)
+                closest_point = food_point
+
     return closest_point
 
 def no_wall(data, directions, state):
