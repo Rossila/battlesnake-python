@@ -348,7 +348,7 @@ def target_snakes(state):
             otherState.food_list = state.food_list
             otherState.snake_list = state.snake_list
             otherState.your_snake_point = snake.point
-            otherState.board = state.cur_snake_board
+            otherState.board = state.board
             otherState.your_snake_length = snake.length
             otherState.your_snake_health = state.your_snake_health
 
