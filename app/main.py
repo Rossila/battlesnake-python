@@ -158,14 +158,6 @@ def avoid_traps(state, directions):
     area_left = calc_area(newPoint(your_snake_point.x - 1, your_snake_point.y), state, set([]), 0)
     # right
     area_right = calc_area(newPoint(your_snake_point.x + 1, your_snake_point.y), state, set([]), 0)
-    print 'up'
-    print area_up
-    print 'down'
-    print area_down
-    print 'left'
-    print area_left
-    print 'right'
-    print area_right
 
     if state.survival == 1:
         if area_up < state.your_snake_length and 'up' in directions:
@@ -355,8 +347,6 @@ def target_snakes(state):
             directions = valid_moves(None, ['up', 'down', 'left', 'right'], otherState)
             direction = random.choice(directions)
             new = None
-            print ("~~~~~~ AMANDAR WAS HERE ~~~~")
-            print directions
             if (direction == 'up'):
                 new = newPoint(snake.point.x, snake.point.y - 1)
             elif (directions == 'down'):
@@ -373,7 +363,6 @@ def calc_area(point, state, visited, tries):
     if point.x > 0 and point.x < len(state.board[0]) and point.y > 0 and point.y < len(state.board):
         tries += 1
         if tries > 10000:
-            print '10000 reached'
             return 0
         if point.x > 0 and valid_square(newPoint(point.x-1, point.y), state):
             p = newPoint(point.x - 1, point.y)
@@ -403,6 +392,7 @@ def printGrid(cur_snake_board):
         printStuff(cur_snake_board[y])
 
 def printStuff(stuff):
+    return
     print stuff
 
 # Expose WSGI app (so gunicorn can find it)
