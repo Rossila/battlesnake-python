@@ -259,7 +259,7 @@ def target_food_point(state):
     squaredDistance = -1
 
     for food_point in state.food_list:
-        if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance and not willCollide(food_point):
+        if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance and not willCollide(state, food_point):
             squaredDistance = your_snake_point.squaredDistance(food_point)
             closest_point = food_point
 
