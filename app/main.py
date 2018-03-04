@@ -127,6 +127,8 @@ def choose_move(data, directions, state):
     target = target_food_point(state)
     your_snake_point = state.your_snake_point
 
+    printStuff('available directions')
+    printStuff(directions)
     direction = random.choice(directions)
 
     if target.x > your_snake_point.x and 'right' in directions:
