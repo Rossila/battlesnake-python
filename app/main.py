@@ -257,7 +257,7 @@ def target_food_point(state):
             closest_point = food_point
 
     # eat other snakes in select scenarios
-    if closest_point > 10 and state.your_snake_health > 15:
+    if closest_point > 3 and state.your_snake_health > 15:
         squaredDistance = -1
         for food_point in state.food_snake_list:
             if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance:
