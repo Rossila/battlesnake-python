@@ -281,13 +281,13 @@ def no_wall(data, directions, state):
     if head.y == 0 and 'up' in directions:
         directions.remove('up')
     # down
-    if head.y == data.get('height') - 1 and 'down' in directions:
+    if head.y == len(state.board) - 1 and 'down' in directions:
         directions.remove('down')
     # left
     if head.x == 0 and 'left' in directions:
         directions.remove('left')
     # right
-    if head.x == data.get('width') - 1 and 'right' in directions:
+    if head.x == len(state.board[0]) - 1 and 'right' in directions:
         directions.remove('right')
 
     return directions
