@@ -117,7 +117,10 @@ def move():
     printGrid(state.board)
 
     filtered_moves = valid_moves(data, directions, state)
+    old_moves = filtered_moves
     filtered_moves = avoid_traps(state, directions)
+    if (not filtered_moves or len(filtered_moves) < 1):
+        filtered_moves = old_moves
     direction = choose_move(data, filtered_moves, state)
     printStuff(direction)
     return {
