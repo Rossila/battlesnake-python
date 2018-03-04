@@ -325,32 +325,33 @@ def target_snakes(state):
 def valid_square(point, state):
     return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
 
-
 def calc_area(point, state, visited):
+    return len(area(point, state, visited))
+
+def area(point, state, visited):
     if point.x > 0 and point.x < len(state.board[0]) - 1 and point.y > 0 and point.y < len(state.board) - 1:
-        print 'hi'
         # left
         p = newPoint(point.x - 1, point.y)
         if valid_square(p, state) and p not in visited:
 	    visited.add(p)
-	    calc_area(p, state, visited)
+	    area(p, state, visited)
         # up
         p = newPoint(point.x, point.y - 1)
         if valid_square(p, state) and p not in visited:
             visited.add(p)
-    	    calc_area(p, state, visited)
+    	    area(p, state, visited)
         # right
         p = newPoint(point.x + 1, point.y)
         if valid_square(p, state) and p not in visited:
             visited.add(p)
-    	    calc_area(p, state, visited)
+    	    area(p, state, visited)
         # down
         p = newPoint(point.x, point.y + 1)
         if valid_square(p, state) and p not in visited:
             visited.add(p)
-    	    calc_area(p, state, visited)
+    	    area(p, state, visited)
 
-    return len(visited)
+    return visited
 
 def printGrid(cur_snake_board):
     for y in range(len(cur_snake_board)):
