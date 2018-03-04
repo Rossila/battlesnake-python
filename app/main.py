@@ -246,13 +246,20 @@ def valid_moves(data, directions, state):
     directions = no_suicide(data, directions, state)
     return directions
 
+def willCollide(state, poi):
+    if Math.sqrt(state.your_snake_point.squaredDistance(poi)) < 2:
+        for snake in snake_list:
+            if Math.sqrt(snake.point.squaredDistance(poi)) < 2:
+                return True
+    return False
+
 def target_food_point(state):
     closest_point = state.food_list[0]
     your_snake_point = state.your_snake_point
     squaredDistance = -1
 
     for food_point in state.food_list:
-        if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance:
+        if squaredDistance < 0 or your_snake_point.squaredDistance(food_point) < squaredDistance and not willCollide(food_point):
             squaredDistance = your_snake_point.squaredDistance(food_point)
             closest_point = food_point
 
