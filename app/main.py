@@ -211,6 +211,8 @@ def current_board(data):
     # add snakes
     snake_list_data = data.get('snakes').get('data')
     for snake in snake_list_data:
+        if snake.get('health') == 0:
+            continue
         snake_data = snake.get('body').get('data')
         for index, point in enumerate(snake_data):
             point = Point(point)
