@@ -248,7 +248,7 @@ def valid_moves(data, directions, state):
 
 def willCollide(state, poi):
     if state.your_snake_point.squaredDistance(poi) < 2:
-        for snake in snake_list:
+        for snake in state.snake_list:
             if snake.point.squaredDistance(poi) < 2:
                 return True
     return False
