@@ -144,20 +144,16 @@ def choose_move(data, directions, state):
 
     return direction
 
-
-def valid_square(point, state):
-    return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
-
 def avoid_traps(state, directions):
     your_snake_point = state.your_snake_point
     # up
-    area_up = calc_area(newPoint(your_snake_point.x, your_snake_point.y - 1), state, set([]), 0)
+    area_up = calc_area(newPoint(your_snake_point.x, your_snake_point.y - 1), state, set([]))
     # down
-    area_down = calc_area(newPoint(your_snake_point.x, your_snake_point.y + 1), state, set([]), 0)
+    area_down = calc_area(newPoint(your_snake_point.x, your_snake_point.y + 1), state, set([]))
     # left
-    area_left = calc_area(newPoint(your_snake_point.x - 1, your_snake_point.y), state, set([]), 0)
+    area_left = calc_area(newPoint(your_snake_point.x - 1, your_snake_point.y), state, set([]))
     # right
-    area_right = calc_area(newPoint(your_snake_point.x + 1, your_snake_point.y), state, set([]), 0)
+    area_right = calc_area(newPoint(your_snake_point.x + 1, your_snake_point.y), state, set([]))
 
     if state.survival == 1:
         if area_up < state.your_snake_length and 'up' in directions:
@@ -358,34 +354,36 @@ def target_snakes(state):
             if new:
                 state.food_snake_list.append(new)
 
+def valid_square(point, state):
+    return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
 
-def calc_area(point, state, visited, tries):
-    if point.x > 0 and point.x < len(state.board[0]) and point.y > 0 and point.y < len(state.board):
-        tries += 1
-        if tries > 10000:
-            return 0
-        if point.x > 0 and valid_square(newPoint(point.x-1, point.y), state):
-            p = newPoint(point.x - 1, point.y)
-            if p not in visited:
-    	        visited.add(newPoint(point.x - 1, point.y))
-    	        calc_area(newPoint(point.x - 1, point.y), state, visited, tries)
-        if point.y > 0 and valid_square(newPoint(point.x, point.y-1), state):
-            p = newPoint(point.x, point.y - 1)
-            if p not in visited:
-                visited.add(newPoint(point.x, point.y - 1))
-                calc_area(newPoint(point.x, point.y - 1), state, visited, tries)
-        if point.x < len(state.board[0]) - 1 and valid_square(newPoint(point.x+1, point.y), state):
-            p = newPoint(point.x + 1, point.y)
-            if p not in visited:
-                visited.add(newPoint(point.x + 1, point.y))
-                calc_area(newPoint(point.x + 1, point.y), state, visited, tries)
-        if point.y < len(state.board) - 1 and valid_square(newPoint(point.x, point.y+1), state):
-            p = newPoint(point.x, point.y + 1)
-            if p not in visited:
-                visited.add(newPoint(point.x, point.y + 1))
-                calc_area(newPoint(point.x, point.y + 1), state, visited, tries)
+def calc_area(point, state, visited):
+    return len(area(point, state, visited))
 
-    return len(visited)
+def area(point, state, visited):
+    if point.x > 0 and point.x < len(state.board[0]) - 1 and point.y > 0 and point.y < len(state.board) - 1:
+        # left
+        p = newPoint(point.x - 1, point.y)
+        if valid_square(p, state) and p not in visited:
+	    visited.add(p)
+	    area(p, state, visited)
+        # up
+        p = newPoint(point.x, point.y - 1)
+        if valid_square(p, state) and p not in visited:
+            visited.add(p)
+    	    area(p, state, visited)
+        # right
+        p = newPoint(point.x + 1, point.y)
+        if valid_square(p, state) and p not in visited:
+            visited.add(p)
+    	    area(p, state, visited)
+        # down
+        p = newPoint(point.x, point.y + 1)
+        if valid_square(p, state) and p not in visited:
+            visited.add(p)
+    	    area(p, state, visited)
+
+        return visited
 
 def printGrid(cur_snake_board):
     for y in range(len(cur_snake_board)):
