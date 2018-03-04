@@ -276,50 +276,48 @@ def target_food_point(state):
     return closest_point
 
 def no_wall(data, directions, state):
-    you = data.get('you')
-    head = you.get('body').get('data')[0]
+    head = state.your_snake_point
     # up
-    if head.get('y') == 0 and 'up' in directions:
+    if head.y == 0 and 'up' in directions:
         directions.remove('up')
     # down
-    if head.get('y') == data.get('height') - 1 and 'down' in directions:
+    if head.y == data.get('height') - 1 and 'down' in directions:
         directions.remove('down')
     # left
-    if head.get('x') == 0 and 'left' in directions:
+    if head.x == 0 and 'left' in directions:
         directions.remove('left')
     # right
-    if head.get('x') == data.get('width') - 1 and 'right' in directions:
+    if head.x == data.get('width') - 1 and 'right' in directions:
         directions.remove('right')
 
     return directions
 
 
 def no_suicide(data, directions, state):
-    you = data.get('you')
-    first = you.get('body').get('data')[0]
+    first = state.your_snake_point
     currBoard = state.board
 
     if 'up' in directions:
-        next_x = first.get('x')
-        next_y = first.get('y') - 1
+        next_x = first.x
+        next_y = first.y - 1
         printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('up')
     if 'down' in directions:
-        next_x = first.get('x')
-        next_y = first.get('y') + 1
+        next_x = first.x
+        next_y = first.y + 1
         printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('down')
     if 'left' in directions:
-        next_x = first.get('x') - 1
-        next_y = first.get('y')
+        next_x = first.x - 1
+        next_y = first.y
         printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('left')
     if 'right' in directions:
-        next_x = first.get('x') + 1
-        next_y = first.get('y')
+        next_x = first.x + 1
+        next_y = first.y
         printStuff(currBoard[next_y][next_x])
         if currBoard[next_y][next_x] == NodeType.SNAKE_HEAD or currBoard[next_y][next_x] == NodeType.SNAKE_BODY:
             directions.remove('right')
@@ -345,7 +343,28 @@ def direction(a, b):
 def target_snakes(state):
     for snake in state.snake_list:
         if snake.length < state.your_snake_length:
-            state.food_snake_list.append(snake.point)
+            # this snake is edible. Travel towards a valid move of its
+            otherState = State()
+            otherState.food_list = state.food_list
+            stotherStateate.snake_list = state.snake_list
+            otherState.your_snake_point = snake.point
+            otherState.board = state.cur_snake_board
+            otherState.your_snake_length = snake.length
+            stotherStateate.your_snake_health = state.your_snake_health
+
+            directions = valid_moves(None, ['up', 'down', 'left', 'right'], otherState)
+            direction = random.choice(directions)
+            new = None
+            if (direction == 'up'):
+                new = newPoint(snake.point.x, snake.point.y - 1)
+            elif (directions == 'down'):
+                new = newPoint(snake.point.x, snake.point.y + 1)
+            elif (directions == 'left'):
+                new = newPoint(snake.point.x - 1, snake.point.y)
+            elif (directions == 'right'):
+                new = newPoint(snake.point.x + 1, snake.point.y)
+            if new:
+                state.food_snake_list.append(new)
 
 
 def calc_area(point, state, visited, tries):
