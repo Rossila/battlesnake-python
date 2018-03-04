@@ -323,7 +323,7 @@ def direction(a, b):
 def target_snakes(state):
     for snake in state.snake_list:
         if snake.length < state.your_snake_length:
-            state.food_snake_list.append(point)
+            state.food_snake_list.append(snake.point)
 
 
 def calc_area(point, state, visited, tries):
