@@ -5,7 +5,7 @@ import random
 from enum import Enum
 
 class State:
-    survival = 1
+    survival = 0
     food_list = []
     food_snake_list = []
     # list of positions of snake heads (not including yourself)
