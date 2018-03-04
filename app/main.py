@@ -199,7 +199,7 @@ def current_board(data):
     # get your snake
     your_snake_point = Point(data.get('you').get('body').get('data')[0])
     your_snake_length = data.get('you').get('body').get('data')[0].get('length')
-    your_snake_health = data.get('you').get('body').get('data')[0].get('health')
+    your_snake_health = data.get('you').get('health')
 
     # add snakes
     snake_list_data = data.get('snakes').get('data')
