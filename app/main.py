@@ -333,36 +333,48 @@ def valid_square(point, state):
 def bfs(state, point):
     board_width = state.board_width
     board_height = state.board_height
-    visited = [[False for width in range(board_width)] for height in range(board_height)]
+    visited = [[0 for width in range(board_width)] for height in range(board_height)]
     queue = []
     queue.append(point)
-    visited[point.y][point.x] = True
+
+    valid = set([])
+    valid.add(point)
+
+    if point.x < 0 or point.y < 0 or point.x >= state.board_width or point.y >= state.board_height:
+        return []
+
+    visited[point.y][point.x] = 1
 
     while queue:
-        s = queue.pop(0)
+        point = queue.pop(0)
         
         if point.x > 0:
             p = newPoint(point.x - 1, point.y)
-            if valid_square(p, state) and visited[p.y][p.x] == False:
-                visited[p.y][p.x] = True
+            if valid_square(p, state) and visited[p.y][p.x] == 0:
                 queue.append(p)
+                valid.add(p)
+                visited[p.y][p.x] = 1
         if point.y > 0:
             p = newPoint(point.x, point.y - 1)
-            if valid_square(p, state) and visited[p.y][p.x] == False:
-                visited[p.y][p.x] = True
+            if valid_square(p, state) and visited[p.y][p.x] == 0:
                 queue.append(p)
+                valid.add(p)
+                visited[p.y][p.x] = 1
         if point.y < len(state.board) - 1:
             p = newPoint(point.x, point.y + 1)
-            if valid_square(p, state) and visited[p.y][p.x] == False:
-                visited[p.y][p.x] = True
+            if valid_square(p, state) and visited[p.y][p.x] == 0:
                 queue.append(p)
+                valid.add(p)
+                visited[p.y][p.x] = 1
         if point.x < len(state.board[0]) - 1:
             p = newPoint(point.x + 1, point.y)
-            if valid_square(p, state) and visited[p.y][p.x] == False:
-                visited[p.y][p.x] = True
+            if valid_square(p, state) and visited[p.y][p.x] == 0:
                 queue.append(p)
+                valid.add(p)
+                visited[p.y][p.x] = 1
 
-    return visited
+    printTable(visited)
+    return valid
     
 
 
@@ -394,6 +406,10 @@ def calc_area(point, state, visited):
 def printGrid(cur_snake_board):
     for y in range(len(cur_snake_board)):
         printStuff(cur_snake_board[y])
+
+def printTable(visited):
+    for y in range(len(visited)):
+        print visited[y]
 
 def printStuff(stuff):
     print stuff
