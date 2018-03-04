@@ -5,7 +5,7 @@ import random
 from enum import Enum
 
 class State:
-    survival = 0
+    survival = 1
     food_list = []
     food_snake_list = []
     # list of positions of snake heads (not including yourself)
@@ -149,31 +149,37 @@ def choose_move(data, directions, state):
 def avoid_traps(state, directions):
     if state.survival == 1:
         your_snake_point = state.your_snake_point
-        # up
-        area_up = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y - 1)))
-        # down
-        area_down = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y + 1)))
-        # left
-        area_left = len(bfs(state, newPoint(your_snake_point.x - 1, your_snake_point.y)))
-        # right
-        area_right = len(bfs(state, newPoint(your_snake_point.x + 1, your_snake_point.y)))
-        print 'up'
-        print area_up
-        print 'down'
-        print area_down
-        print 'left'
-        print area_left
-        print 'right'
-        print area_right
-
-        if area_up < state.your_snake_length and 'up' in directions:
-            directions.remove('up')
-        if area_down < state.your_snake_length and 'down' in directions:
-            directions.remove('down')
-        if area_right < state.your_snake_length and 'right' in directions:
-            directions.remove('right')
-        if area_left < state.your_snake_length and 'left' in directions:
-            directions.remove('left')
+        area_up = 0
+        area_down = 0
+        area_left = 0
+        area_right = 0
+        for direction in directions:
+            # up
+            if (direction == 'up'):
+                area_up = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y - 1)))
+                print 'up'
+                print area_up
+                if area_up < state.your_snake_length:
+                    directions.remove('up')
+            elif (direction == 'down'):
+                area_down = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y + 1)))
+                print 'down'
+                print area_down
+                if area_down < state.your_snake_length:
+                    directions.remove('down')
+            elif (direction == 'left'):
+                area_left = len(bfs(state, newPoint(your_snake_point.x - 1, your_snake_point.y)))
+                print 'left'
+                print area_left
+                if area_left < state.your_snake_length:
+                    directions.remove('left')
+            elif (direction == 'right'):
+                # right
+                area_right = len(bfs(state, newPoint(your_snake_point.x + 1, your_snake_point.y)))
+                print 'right'
+                print area_right
+                if area_right < state.your_snake_length:
+                    directions.remove('right')
 
     return directions
 
