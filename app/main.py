@@ -355,6 +355,7 @@ def target_snakes(state):
             directions = valid_moves(None, ['up', 'down', 'left', 'right'], otherState)
             direction = random.choice(directions)
             new = None
+            print ("~~~~~~ AMANDAR WAS HERE ~~~~")
             if (direction == 'up'):
                 new = newPoint(snake.point.x, snake.point.y - 1)
             elif (directions == 'down'):
