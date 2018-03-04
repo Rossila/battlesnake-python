@@ -365,18 +365,21 @@ def target_snakes(state):
             otherState.your_snake_health = state.your_snake_health
 
             directions = valid_moves(None, ['up', 'down', 'left', 'right'], otherState)
-            direction = random.choice(directions)
-            new = None
-            if (direction == 'up'):
-                new = newPoint(snake.point.x, snake.point.y - 1)
-            elif (directions == 'down'):
-                new = newPoint(snake.point.x, snake.point.y + 1)
-            elif (directions == 'left'):
-                new = newPoint(snake.point.x - 1, snake.point.y)
-            elif (directions == 'right'):
-                new = newPoint(snake.point.x + 1, snake.point.y)
-            if new:
-                state.food_snake_list.append(new)
+            if (directions == None or len(directions) < 1):
+                continue
+            else:
+                direction = random.choice(directions)
+                new = None
+                if (direction == 'up'):
+                    new = newPoint(snake.point.x, snake.point.y - 1)
+                elif (directions == 'down'):
+                    new = newPoint(snake.point.x, snake.point.y + 1)
+                elif (directions == 'left'):
+                    new = newPoint(snake.point.x - 1, snake.point.y)
+                elif (directions == 'right'):
+                    new = newPoint(snake.point.x + 1, snake.point.y)
+                if new:
+                    state.food_snake_list.append(new)
 
 def valid_square(point, state):
     return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
