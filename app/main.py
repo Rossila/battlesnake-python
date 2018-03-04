@@ -14,6 +14,8 @@ class State:
     your_snake_length = 0
     your_snake_health = 0
     board = None
+    board_width = 0
+    board_height = 0
 
     def __init__(self):
         pass
@@ -145,17 +147,25 @@ def choose_move(data, directions, state):
     return direction
 
 def avoid_traps(state, directions):
-    your_snake_point = state.your_snake_point
-    # up
-    area_up = calc_area(newPoint(your_snake_point.x, your_snake_point.y - 1), state, set([]))
-    # down
-    area_down = calc_area(newPoint(your_snake_point.x, your_snake_point.y + 1), state, set([]))
-    # left
-    area_left = calc_area(newPoint(your_snake_point.x - 1, your_snake_point.y), state, set([]))
-    # right
-    area_right = calc_area(newPoint(your_snake_point.x + 1, your_snake_point.y), state, set([]))
-
     if state.survival == 1:
+        your_snake_point = state.your_snake_point
+        # up
+        area_up = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y - 1)))
+        # down
+        area_down = len(bfs(state, newPoint(your_snake_point.x, your_snake_point.y + 1)))
+        # left
+        area_left = len(bfs(state, newPoint(your_snake_point.x - 1, your_snake_point.y)))
+        # right
+        area_right = len(bfs(state, newPoint(your_snake_point.x + 1, your_snake_point.y)))
+        print 'up'
+        print area_up
+        print 'down'
+        print area_down
+        print 'left'
+        print area_left
+        print 'right'
+        print area_right
+
         if area_up < state.your_snake_length and 'up' in directions:
             directions.remove('up')
         if area_down < state.your_snake_length and 'down' in directions:
@@ -223,7 +233,8 @@ def current_board(data):
     state.your_snake_point = your_snake_point
     state.board = cur_snake_board
     state.your_snake_length = your_snake_length
-    state.your_snake_health = your_snake_health
+    state.board_width = data.get('width')
+    state.board_height = data.get('height')
 
     target_snakes(state)
 
@@ -357,33 +368,67 @@ def target_snakes(state):
 def valid_square(point, state):
     return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
 
-def calc_area(point, state, visited):
-    return len(area(point, state, visited))
 
-def area(point, state, visited):
+def bfs(state, point):
+    board_width = state.board_width
+    board_height = state.board_height
+    visited = [[False for width in range(board_width)] for height in range(board_height)]
+    queue = []
+    queue.append(point)
+    visited[point.y][point.x] = True
+
+    while queue:
+        s = queue.pop(0)
+
+        if point.x > 0:
+            p = newPoint(point.x - 1, point.y)
+            if valid_square(p, state) and visited[p.y][p.x] == False:
+                visited[p.y][p.x] = True
+                queue.append(p)
+        if point.y > 0:
+            p = newPoint(point.x, point.y - 1)
+            if valid_square(p, state) and visited[p.y][p.x] == False:
+                visited[p.y][p.x] = True
+                queue.append(p)
+        if point.y < len(state.board) - 1:
+            p = newPoint(point.x, point.y + 1)
+            if valid_square(p, state) and visited[p.y][p.x] == False:
+                visited[p.y][p.x] = True
+                queue.append(p)
+        if point.x < len(state.board[0]) - 1:
+            p = newPoint(point.x + 1, point.y)
+            if valid_square(p, state) and visited[p.y][p.x] == False:
+                visited[p.y][p.x] = True
+                queue.append(p)
+
+    return visited
+
+
+
+def calc_area(point, state, visited):
     if point.x > 0 and point.x < len(state.board[0]) - 1 and point.y > 0 and point.y < len(state.board) - 1:
         # left
         p = newPoint(point.x - 1, point.y)
         if valid_square(p, state) and p not in visited:
 	    visited.add(p)
-	    area(p, state, visited)
+	    calc_area(p, state, visited)
         # up
         p = newPoint(point.x, point.y - 1)
         if valid_square(p, state) and p not in visited:
             visited.add(p)
-    	    area(p, state, visited)
+    	    calc_area(p, state, visited)
         # right
         p = newPoint(point.x + 1, point.y)
         if valid_square(p, state) and p not in visited:
             visited.add(p)
-    	    area(p, state, visited)
+    	    calc_area(p, state, visited)
         # down
         p = newPoint(point.x, point.y + 1)
         if valid_square(p, state) and p not in visited:
             visited.add(p)
-    	    area(p, state, visited)
+    	    calc_area(p, state, visited)
 
-        return visited
+    return len(visited)
 
 def printGrid(cur_snake_board):
     for y in range(len(cur_snake_board)):
