@@ -117,7 +117,8 @@ def move():
     printGrid(state.board)
 
     filtered_moves = valid_moves(data, directions, state)
-    filtered_moves = avoid_traps(state, directions)
+    if directions:
+        filtered_moves = avoid_traps(state, directions)
     direction = choose_move(data, filtered_moves, state)
     printStuff(direction)
     return {
@@ -132,7 +133,8 @@ def choose_move(data, directions, state):
 
     printStuff('available directions')
     printStuff(directions)
-    direction = random.choice(directions)
+    if directions:
+        direction = random.choice(directions)
 
     if target.x > your_snake_point.x and 'right' in directions:
         direction = 'right'
