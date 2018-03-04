@@ -142,6 +142,9 @@ def choose_move(data, directions, state):
     return direction
 
 
+def valid_square(point, state):
+    return state.board[point.y][point.x] == NodeType.EMPTY or state.board[point.y][point.x] == NodeType.FOOD
+
 def avoid_traps(state, directions):
     your_snake_point = state.your_snake_point
     # up
@@ -152,6 +155,14 @@ def avoid_traps(state, directions):
     area_left = calc_area(newPoint(your_snake_point.x - 1, your_snake_point.y), state, set([]), 0)
     # right
     area_right = calc_area(newPoint(your_snake_point.x + 1, your_snake_point.y), state, set([]), 0)
+    print 'up'
+    print area_up
+    print 'down'
+    print area_down
+    print 'left'
+    print area_left
+    print 'right'
+    print area_right
 
     if state.survival == 1:
         if area_up < state.your_snake_length and 'up' in directions:
@@ -319,22 +330,22 @@ def calc_area(point, state, visited, tries):
         if tries > 10000:
             print '10000 reached'
             return 0
-        if point.x > 0 and state.board[point.x-1][point.y] == NodeType.EMPTY:
+        if point.x > 0 and valid_square(newPoint(point.x-1, point.y), state):
             p = newPoint(point.x - 1, point.y)
             if p not in visited:
     	        visited.add(newPoint(point.x - 1, point.y))
     	        calc_area(newPoint(point.x - 1, point.y), state, visited, tries)
-        if point.y > 0 and state.board[point.x][point.y-1] == NodeType.EMPTY:
+        if point.y > 0 and valid_square(newPoint(point.x, point.y-1), state):
             p = newPoint(point.x, point.y - 1)
             if p not in visited:
                 visited.add(newPoint(point.x, point.y - 1))
                 calc_area(newPoint(point.x, point.y - 1), state, visited, tries)
-        if point.x < len(state.board[0]) - 1 and state.board[point.x + 1][point.y] == NodeType.EMPTY:
+        if point.x < len(state.board[0]) - 1 and valid_square(newPoint(point.x+1, point.y), state):
             p = newPoint(point.x + 1, point.y)
             if p not in visited:
                 visited.add(newPoint(point.x + 1, point.y))
                 calc_area(newPoint(point.x + 1, point.y), state, visited, tries)
-        if point.y < len(state.board) - 1 and state.board[point.x][point.y+1] == NodeType.EMPTY:
+        if point.y < len(state.board) - 1 and valid_square(newPoint(point.x, point.y+1), state):
             p = newPoint(point.x, point.y + 1)
             if p not in visited:
                 visited.add(newPoint(point.x, point.y + 1))
@@ -347,7 +358,6 @@ def printGrid(cur_snake_board):
         printStuff(cur_snake_board[y])
 
 def printStuff(stuff):
-    #return;
     print stuff
 
 # Expose WSGI app (so gunicorn can find it)
